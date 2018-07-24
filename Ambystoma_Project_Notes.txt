@@ -1,0 +1,11 @@
+Ambystoma Project Notes: 
+
+7/23/18
+-Discussing particular ways to move files into Sapelo for analysis. Sbock and Ebertucci were
+planning to use wget or curl to download directly from dropbox, which made our goals from
+last week seem confusing
+-Need to become more familiar with interactive/login nodes and how to properly move around
+and submit jobs
+-New rotation student might be involved with this project, starting next week (maybe)
+-For next week, goals are to 1.) get files into lustre 2.) run QC for a. rCorrector and
+ b. TrimGalore/CutAdapt
