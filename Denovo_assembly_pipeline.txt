@@ -409,3 +409,6 @@ trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/T
 trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/90/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/90/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-90_S19_L003_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-90_S19_L003_R2_001.cor.fq
 trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/90/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/90/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-90_S19_L004_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-90_S19_L004_R2_001.cor.fq
 
+#TrimGalore ran to completion, taking ~3 hours to run all 8 samples (8 read groups per sample)
+#Probably a good thing we ran this, because there appears to be a substantial amount of adapter contamination.
+#Almost all bases appear to be passing quality control threshold, though, which is good.
