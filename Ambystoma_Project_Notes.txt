@@ -9,3 +9,10 @@ and submit jobs
 -New rotation student might be involved with this project, starting next week (maybe)
 -For next week, goals are to 1.) get files into lustre 2.) run QC for a. rCorrector and
  b. TrimGalore/CutAdapt
+ 
+7/30/18
+-Discussed TrimGalore and rCorrector use and output, particularly how to use python script
+to clean up rCorrector output and how to interpret the TrimGalore adapter contamination
+-After discussing as a group and learning that the default setting for TrimGalore is to remove
+adapter sequences with a single basepair of overlap, we decided to rerun TrimGalore with this
+default setting relaxed to 3 basepair overlap.
