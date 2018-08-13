@@ -1,0 +1,18 @@
+#PBS -S /bin/bash
+#PBS -q batch
+#PBS -N Salmon1.1
+#PBS -l nodes=1:ppn=1:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=10gb
+
+cd /lustre1/mdh72859/Denovo_Assembly/Salmon
+mkdir Salmon_Quant2
+module load Salmon/0.8.2-foss-2016b-Python-2.7.14
+salmon quant -i transcripts.index -l A -1 138599-110_S27_L001_R1_001.fastq 138599-110_S27_L002_R1_001.fastq 138599-110_S27_L003_R1_001.fastq 138599-110_S27_L004_R1_001.fastq -2 138599-110_S27_L001_R2_001.fastq 138599-110_S27_L002_R2_001.fastq 138599-110_S27_L003_R2_001.fastq 138599-110_S27_L004_R2_001.fastq -o Salmon_Quant2/110
+salmon quant -i transcripts.index -l A -1 138599-134_S21_L001_R1_001.fastq 138599-134_S21_L002_R1_001.fastq 138599-134_S21_L003_R1_001.fastq 138599-134_S21_L004_R1_001.fastq -2 138599-134_S21_L001_R2_001.fastq 138599-134_S21_L002_R2_001.fastq 138599-134_S21_L003_R2_001.fastq 138599-134_S21_L004_R2_001.fastq -o Salmon_Quant2/134
+salmon quant -i transcripts.index -l A -1 138599-23_S22_L001_R1_001.fastq 138599-23_S22_L002_R1_001.fastq 138599-23_S22_L003_R1_001.fastq 138599-23_S22_L004_R1_001.fastq -2 138599-23_S22_L001_R2_001.fastq 138599-23_S22_L002_R2_001.fastq 138599-23_S22_L003_R2_001.fastq 138599-23_S22_L004_R2_001.fastq -o Salmon_Quant2/23
+salmon quant -i transcripts.index -l A -1 138599-63_S23_L001_R1_001.fastq 138599-63_S23_L002_R1_001.fastq 138599-63_S23_L003_R1_001.fastq 138599-63_S23_L004_R1_001.fastq -2 138599-63_S23_L001_R2_001.fastq 138599-63_S23_L002_R2_001.fastq 138599-63_S23_L003_R2_001.fastq 138599-63_S23_L004_R2_001.fastq -o Salmon_Quant2/63
+salmon quant -i transcripts.index -l A -1 138599-68_S18_L001_R1_001.fastq 138599-68_S18_L002_R1_001.fastq 138599-68_S18_L003_R1_001.fastq 138599-68_S18_L004_R1_001.fastq -2 138599-68_S18_L001_R2_001.fastq 138599-68_S18_L002_R2_001.fastq 138599-68_S18_L003_R2_001.fastq 138599-68_S18_L004_R2_001.fastq -o Salmon_Quant2/68
+salmon quant -i transcripts.index -l A -1 138599-69_S24_L001_R1_001.fastq 138599-69_S24_L002_R1_001.fastq 138599-69_S24_L003_R1_001.fastq 138599-69_S24_L004_R1_001.fastq -2 138599-69_S24_L001_R2_001.fastq 138599-69_S24_L002_R2_001.fastq 138599-69_S24_L003_R2_001.fastq 138599-69_S24_L004_R2_001.fastq -o Salmon_Quant2/69
+salmon quant -i transcripts.index -l A -1 138599-8_S15_L001_R1_001.fastq 138599-8_S15_L002_R1_001.fastq 138599-8_S15_L003_R1_001.fastq 138599-8_S15_L004_R1_001.fastq -2 138599-8_S15_L001_R2_001.fastq 138599-8_S15_L002_R2_001.fastq 138599-8_S15_L003_R2_001.fastq 138599-8_S15_L004_R2_001.fastq -o Salmon_Quant2/8
+salmon quant -i transcripts.index -l A -1 138599-90_S19_L001_R1_001.fastq 138599-90_S19_L002_R1_001.fastq 138599-90_S19_L003_R1_001.fastq 138599-90_S19_L004_R1_001.fastq -2 138599-90_S19_L001_R2_001.fastq 138599-90_S19_L002_R2_001.fastq 138599-90_S19_L003_R2_001.fastq 138599-90_S19_L004_R2_001.fastq -o Salmon_Quant2/90

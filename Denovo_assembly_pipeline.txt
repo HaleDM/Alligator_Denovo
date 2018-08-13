@@ -199,7 +199,7 @@ python FilterUncorrectablePEfastq.py -1 138599-90_S19_L001_R1_001.cor.fq -2 1385
 python FilterUncorrectablePEfastq.py -1 138599-90_S19_L002_R1_001.cor.fq -2 138599-90_S19_L002_R2_001.cor.fq -o fixed 2>&1 > rmunfixable_90_2.out
 python FilterUncorrectablePEfastq.py -1 138599-90_S19_L003_R1_001.cor.fq -2 138599-90_S19_L003_R2_001.cor.fq -o fixed 2>&1 > rmunfixable_90_3.out
 
-07/23/18
+08/23/18
 #rCorrector worked. Now want to run TrimGalore, which is on both Sapelo and Sapelo2
 
 #What follows is TrimGalore test script
@@ -323,92 +323,197 @@ length	count	expect	max.err	error counts
 75	2	0.1	1	0 2
 76	1	0.1	1	0 1
 
-07/24/18
-#Scaling TrimGalore up to process all STIM denovo samples 
-#Scaled up script is included below, and appears to be working:
 #PBS -S /bin/bash
-#PBS -N TrimGalore1.0
+#PBS -N TrimGalore2.0
 #PBS -q batch
 #PBS -l nodes=1:ppn=1:AMD
-#PBS -l walltime=48:00:00
+#PBS -l walltime=6:00:00
 #PBS -l mem=10gb
 
 cd /lustre1/mdh72859/Denovo_Assembly
-mkdir TrimGalore_Fastqc
+mkdir TrimGalore_Fastqc2
 
-cd TrimGalore_Fastqc
+cd TrimGalore_Fastqc2
 mkdir 110
 cd /lustre1/mdh72859/Denovo_Assembly
 module load Trim_Galore/0.4.5-foss-2016b
 
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/110/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/110/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-110_S27_L001_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-110_S27_L001_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/110/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/110/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-110_S27_L002_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-110_S27_L002_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/110/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/110/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-110_S27_L003_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-110_S27_L003_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/110/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/110/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-110_S27_L004_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-110_S27_L004_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/110/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/110/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-110_S27_L001_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-110_S27_L001_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/110/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/110/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-110_S27_L002_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-110_S27_L002_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/110/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/110/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-110_S27_L003_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-110_S27_L003_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/110/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/110/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-110_S27_L004_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-110_S27_L004_R2_001.cor.fq
 
-cd TrimGalore_Fastqc
+cd TrimGalore_Fastqc2
 mkdir 134
 cd /lustre1/mdh72859/Denovo_Assembly
 
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/134/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/134/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-134_S21_L001_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-134_S21_L001_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/134/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/134/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-134_S21_L002_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-134_S21_L002_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/134/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/134/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-134_S21_L003_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-134_S21_L003_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/134/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/134/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-134_S21_L004_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-134_S21_L004_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/134/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/134/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-134_S21_L001_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-134_S21_L001_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/134/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/134/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-134_S21_L002_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-134_S21_L002_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/134/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/134/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-134_S21_L003_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-134_S21_L003_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/134/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/134/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-134_S21_L004_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-134_S21_L004_R2_001.cor.fq
 
-cd TrimGalore_Fastqc
+cd TrimGalore_Fastqc2
 mkdir 23
 cd /lustre1/mdh72859/Denovo_Assembly
 
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/23/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/23/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-23_S22_L001_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-23_S22_L001_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/23/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/23/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-23_S22_L002_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-23_S22_L002_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/23/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/23/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-23_S22_L003_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-23_S22_L003_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/23/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/23/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-23_S22_L004_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-23_S22_L004_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/23/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/23/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-23_S22_L001_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-23_S22_L001_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/23/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/23/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-23_S22_L002_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-23_S22_L002_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/23/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/23/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-23_S22_L003_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-23_S22_L003_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/23/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/23/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-23_S22_L004_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-23_S22_L004_R2_001.cor.fq
 
-cd TrimGalore_Fastqc
+cd TrimGalore_Fastqc2
 mkdir 63
 cd /lustre1/mdh72859/Denovo_Assembly
 
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/63/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/63/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-63_S23_L001_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-63_S23_L001_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/63/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/63/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-63_S23_L002_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-63_S23_L002_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/63/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/63/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-63_S23_L003_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-63_S23_L003_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/63/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/63/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-63_S23_L004_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-63_S23_L004_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/63/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/63/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-63_S23_L001_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-63_S23_L001_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/63/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/63/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-63_S23_L002_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-63_S23_L002_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/63/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/63/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-63_S23_L003_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-63_S23_L003_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/63/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/63/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-63_S23_L004_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-63_S23_L004_R2_001.cor.fq
 
-cd TrimGalore_Fastqc
+cd TrimGalore_Fastqc2
 mkdir 68
 cd /lustre1/mdh72859/Denovo_Assembly
 
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/68/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/68/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-68_S18_L001_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-68_S18_L001_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/68/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/68/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-68_S18_L002_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-68_S18_L002_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/68/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/68/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-68_S18_L003_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-68_S18_L003_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/68/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/68/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-68_S18_L004_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-68_S18_L004_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/68/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/68/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-68_S18_L001_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-68_S18_L001_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/68/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/68/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-68_S18_L002_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-68_S18_L002_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/68/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/68/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-68_S18_L003_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-68_S18_L003_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/68/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/68/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-68_S18_L004_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-68_S18_L004_R2_001.cor.fq
 
-cd TrimGalore_Fastqc
+cd TrimGalore_Fastqc2
 mkdir 69
 cd /lustre1/mdh72859/Denovo_Assembly
 
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/69/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/69/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-69_S24_L001_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-69_S24_L001_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/69/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/69/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-69_S24_L002_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-69_S24_L002_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/69/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/69/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-69_S24_L003_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-69_S24_L003_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/69/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/69/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-69_S24_L004_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-69_S24_L004_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/69/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/69/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-69_S24_L001_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-69_S24_L001_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/69/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/69/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-69_S24_L002_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-69_S24_L002_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/69/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/69/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-69_S24_L003_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-69_S24_L003_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/69/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/69/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-69_S24_L004_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-69_S24_L004_R2_001.cor.fq
 
-cd TrimGalore_Fastqc
+cd TrimGalore_Fastqc2
 mkdir 8
 cd /lustre1/mdh72859/Denovo_Assembly
 
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/8/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/8/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-8_S15_L001_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-8_S15_L001_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/8/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/8/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-8_S15_L002_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-8_S15_L002_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/8/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/8/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-8_S15_L003_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-8_S15_L003_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/8/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/8/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-8_S15_L004_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-8_S15_L004_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/8/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/8/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-8_S15_L001_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-8_S15_L001_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/8/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/8/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-8_S15_L002_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-8_S15_L002_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/8/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/8/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-8_S15_L003_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-8_S15_L003_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/8/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/8/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-8_S15_L004_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-8_S15_L004_R2_001.cor.fq
 
-cd TrimGalore_Fastqc
+cd TrimGalore_Fastqc2
 mkdir 90
 cd /lustre1/mdh72859/Denovo_Assembly
 
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/90/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/90/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-90_S19_L001_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-90_S19_L001_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/90/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/90/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-90_S19_L002_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-90_S19_L002_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/90/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/90/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-90_S19_L003_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-90_S19_L003_R2_001.cor.fq
-trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/90/ -f fastq" -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc/90/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-90_S19_L004_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-90_S19_L004_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/90/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/90/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-90_S19_L001_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-90_S19_L001_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/90/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/90/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-90_S19_L002_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-90_S19_L002_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/90/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/90/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-90_S19_L003_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-90_S19_L003_R2_001.cor.fq
+trim_galore --fastqc --fastqc_args "--outdir /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/90/ -f fastq" -stringency 3 -o /lustre1/mdh72859/Denovo_Assembly/TrimGalore_Fastqc2/90/ --paired /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-90_S19_L004_R1_001.cor.fq /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output/fixed_138599-90_S19_L004_R2_001.cor.fq
 
-#TrimGalore ran to completion, taking ~3 hours to run all 8 samples (8 read groups per sample)
-#Probably a good thing we ran this, because there appears to be a substantial amount of adapter contamination.
-#Almost all bases appear to be passing quality control threshold, though, which is good.
+#As a minor sidestep, attempting to visualize alignment data to see if our reads are stranded or not
+#Using an alignment previously done for STIM RNAseq analysis to test this using IGV to visualize
+#This requires a .BAM file and an index of that .BAM file, or .BAI, which Samtools can generate.
+
+mkdir Bam_test
+cp /lustre1/mdh72859/Analysis_051418/Hisat2_Alignments/101/101_Sorted.bam /lustre1/mdh72859/Denovo_Assembly/Bam_test
+
+#PBS -S /bin/bash
+#PBS -N Samtools_Index1.0.sh
+#PBS -q batch
+#PBS -l nodes=1:ppn=1:AMD
+#PBS -l mem=20gb
+#PBS -l walltime=480:00:00
+
+cd /lustre1/mdh72859/Denovo_Assembly/Bam_test
+module load SAMtools/1.6-foss-2016b
+time samtools index 101_Sorted.bam 101_Sorted.bai
+
+##Generally successful at adding alignment and viewing in IGV, but going to try to address strandedness more directly
+##by using Salmon.
+
+#First step is to generate an index for the RNAseq ovarian transcriptome generated by MDH
+#Should also generate one for the alligator genome to confirm process works
+
+#PBS -S /bin/bash
+#PBS -q batch
+#PBS -N Salmon_test_index2.0
+#PBS -l nodes=1:ppn=1:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=10gb
+
+cd /lustre1/mdh72859/Denovo_Assembly/Salmon
+
+module load Salmon/0.8.2-foss-2016b-Python-2.7.14
+salmon index -t transcripts.fa -i transcripts.index --type quasi -k 31
+
+#Index generation worked.
+
+#Second step is to run quantification in Salmon with the "-l A" option that tells the program
+#to detect and report information on library type. We really don't care much about transcript quantification,
+#which Salmon is designed to do, but it might be helpful to revisit this later to compare transcript levels
+
+#First had to manually move reads for one sample to test, 110, into directory with script. Then, ran Salmon
+
+#PBS -S /bin/bash
+#PBS -q batch
+#PBS -N Salmon_test2.0
+#PBS -l nodes=1:ppn=1:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=10gb
+
+cd /lustre1/mdh72859/Denovo_Assembly/Salmon
+mkdir Salmon_Quant2
+module load Salmon/0.8.2-foss-2016b-Python-2.7.14
+salmon quant -i transcripts.index -l A -1 138599-110_S27_L001_R1_001.fastq 138599-110_S27_L002_R1_001.fastq 138599-110_S27_L003_R1_001.fastq 138599-110_S27_L004_R1_001.fastq -2 138599-110_S27_L001_R2_001.fastq 138599-110_S27_L002_R2_001.fastq 138599-110_S27_L003_R2_001.fastq 138599-110_S27_L004_R2_001.fastq -o Salmon_Quant2/110
+
+#The -l A parameter call above is necessary to get strandedness information for the input library
+#Some output summary is pasted below:
+
+processed 15000000 fragmentsointLog] [info] Automatically detected most likely library type as ISR
+hits: 44234640, hits per frag:  2.96882
+
+[2018-08-07 11:42:19.700] [jointLog] [info] Computed 138679 rich equivalence classes for further processing
+[2018-08-07 11:42:19.700] [jointLog] [info] Counted 12477680 total reads in the equivalence classes 
+
+read_files": "( 138599-110_S27_L001_R1_001.fastq, 138599-110_S27_L001_R2_001.fastq ), ( 138599-110_S27_L002_R1_001.fastq, 138599-110_S27_L002_R2_001.fastq ), ( 138599-110_S27_L003_R1_001.fastq, 138599-110
+_S27_L003_R2_001.fastq ), ( 138599-110_S27_L004_R1_001.fastq, 138599-110_S27_L004_R2_001.fastq )",
+    "expected_format": "ISR",
+    "compatible_fragment_ratio": 0.9087333542773978,
+    "num_compatible_fragments": 11338884,
+    "num_assigned_fragments": 12477680,
+    "num_consistent_mappings": 41467204,
+    "num_inconsistent_mappings": 2913210,
+    "MSF": 0,
+    "OSF": 1191,
+    "ISF": 1272425,
+    "MSR": 0,
+    "OSR": 17614,
+    "ISR": 41467204,
+    "SF": 255748,
+    "SR": 1365267,
+    "MU": 0,
+    "OU": 0,
+    "IU": 0,
+    "U": 0
+    
+#Now going to scale up to get same information for other samples' reads
+#First moved copies of fastq reads into same directory without sample-specific subdirectories
+
+#PBS -S /bin/bash
+#PBS -q batch
+#PBS -N Salmon1.1
+#PBS -l nodes=1:ppn=1:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=10gb
+
+cd /lustre1/mdh72859/Denovo_Assembly/Salmon
+mkdir Salmon_Quant2
+module load Salmon/0.8.2-foss-2016b-Python-2.7.14
+salmon quant -i transcripts.index -l A -1 138599-110_S27_L001_R1_001.fastq 138599-110_S27_L002_R1_001.fastq 138599-110_S27_L003_R1_001.fastq 138599-110_S27_L004_R1_001.fastq -2 138599-110_S27_L001_R2_001.fastq 138599-110_S27_L002_R2_001.fastq 138599-110_S27_L003_R2_001.fastq 138599-110_S27_L004_R2_001.fastq -o Salmon_Quant2/110
+salmon quant -i transcripts.index -l A -1 138599-134_S21_L001_R1_001.fastq 138599-134_S21_L002_R1_001.fastq 138599-134_S21_L003_R1_001.fastq 138599-134_S21_L004_R1_001.fastq -2 138599-134_S21_L001_R2_001.fastq 138599-134_S21_L002_R2_001.fastq 138599-134_S21_L003_R2_001.fastq 138599-134_S21_L004_R2_001.fastq -o Salmon_Quant2/134
+salmon quant -i transcripts.index -l A -1 138599-23_S22_L001_R1_001.fastq 138599-23_S22_L002_R1_001.fastq 138599-23_S22_L003_R1_001.fastq 138599-23_S22_L004_R1_001.fastq -2 138599-23_S22_L001_R2_001.fastq 138599-23_S22_L002_R2_001.fastq 138599-23_S22_L003_R2_001.fastq 138599-23_S22_L004_R2_001.fastq -o Salmon_Quant2/23
+salmon quant -i transcripts.index -l A -1 138599-63_S23_L001_R1_001.fastq 138599-63_S23_L002_R1_001.fastq 138599-63_S23_L003_R1_001.fastq 138599-63_S23_L004_R1_001.fastq -2 138599-63_S23_L001_R2_001.fastq 138599-63_S23_L002_R2_001.fastq 138599-63_S23_L003_R2_001.fastq 138599-63_S23_L004_R2_001.fastq -o Salmon_Quant2/63
+salmon quant -i transcripts.index -l A -1 138599-68_S18_L001_R1_001.fastq 138599-68_S18_L002_R1_001.fastq 138599-68_S18_L003_R1_001.fastq 138599-68_S18_L004_R1_001.fastq -2 138599-68_S18_L001_R2_001.fastq 138599-68_S18_L002_R2_001.fastq 138599-68_S18_L003_R2_001.fastq 138599-68_S18_L004_R2_001.fastq -o Salmon_Quant2/68
+salmon quant -i transcripts.index -l A -1 138599-69_S24_L001_R1_001.fastq 138599-69_S24_L002_R1_001.fastq 138599-69_S24_L003_R1_001.fastq 138599-69_S24_L004_R1_001.fastq -2 138599-69_S24_L001_R2_001.fastq 138599-69_S24_L002_R2_001.fastq 138599-69_S24_L003_R2_001.fastq 138599-69_S24_L004_R2_001.fastq -o Salmon_Quant2/69
+salmon quant -i transcripts.index -l A -1 138599-8_S15_L001_R1_001.fastq 138599-8_S15_L002_R1_001.fastq 138599-8_S15_L003_R1_001.fastq 138599-8_S15_L004_R1_001.fastq -2 138599-8_S15_L001_R2_001.fastq 138599-8_S15_L002_R2_001.fastq 138599-8_S15_L003_R2_001.fastq 138599-8_S15_L004_R2_001.fastq -o Salmon_Quant2/8
+salmon quant -i transcripts.index -l A -1 138599-90_S19_L001_R1_001.fastq 138599-90_S19_L002_R1_001.fastq 138599-90_S19_L003_R1_001.fastq 138599-90_S19_L004_R1_001.fastq -2 138599-90_S19_L001_R2_001.fastq 138599-90_S19_L002_R2_001.fastq 138599-90_S19_L003_R2_001.fastq 138599-90_S19_L004_R2_001.fastq -o Salmon_Quant2/90
+
+#This ran to completion, requiring ~2.5 hours to finish for all 8 samples.
+#All eight libraries appear to be predominantly (89-91%) "ISR", or inward facing, stranded reads
+#where the forward/1st read falls on the reverse strand.

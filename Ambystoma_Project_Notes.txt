@@ -16,3 +16,19 @@ to clean up rCorrector output and how to interpret the TrimGalore adapter contam
 -After discussing as a group and learning that the default setting for TrimGalore is to remove
 adapter sequences with a single basepair of overlap, we decided to rerun TrimGalore with this
 default setting relaxed to 3 basepair overlap.
+
+8/6/18
+-BBP looks into the possible biases and cost/benefit of adapter trimming and the different
+thresholds which we set to start removing basepairs. Limiting the minimum overlap to 3 means
+that we will be trimming 1/56 reads that naturally start/end with AGA, for example (an Illumina
+adapter). At the 5' end of reads, this trimming might negatively influence transcript assembly
+by clipping the TSS. 
+-Moving weekly meetings to Thursday at 9AM, except for next week, which will be Friday at 9AM.
+-Goal for next week is to 1.) initiate alignment in Hisat2 for Emily and for Samantha's guided
+assembly process 2.) initiate assembly in Trinity for Matthew and Ben.
+-Trinity has some functionality for both GO assignment and DEG analysis. Make sure to keep this
+in mind.
+-Also need to use Integrated Genome Viewer (IGV) to determine if our reads are stranded or not.
+Stranded reads in IGV will exhibit a distinct pattern wherein read density falls on one strand
+or the other. This can be visualized using a .BAM file generated after alignment (from MDH's prior
+Hisat2 alignment).
