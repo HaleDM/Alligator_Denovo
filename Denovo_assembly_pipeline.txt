@@ -517,3 +517,178 @@ salmon quant -i transcripts.index -l A -1 138599-90_S19_L001_R1_001.fastq 138599
 #This ran to completion, requiring ~2.5 hours to finish for all 8 samples.
 #All eight libraries appear to be predominantly (89-91%) "ISR", or inward facing, stranded reads
 #where the forward/1st read falls on the reverse strand.
+
+08/16/18
+##Moving forward with Trinity assembly
+##Starting with single-sample test script
+
+#PBS -S /bin/bash
+#PBS -N Trinity1.0test
+#PBS -q highmem_q
+#PBS -l nodes=1:ppn=16
+#PBS -l walltime=100:00:00
+#PBS -l mem=100gb
+
+cd /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output
+module load Trinity/2.6.6-foss-2016b
+Trinity --seqType fq --max_memory 100G --CPU 8 --no_version_check --full_cleanup --normalize_reads --left fixed_138599-134_S21_L001_R1_001.cor.fq,fixed_138599-134_S21_L002_R1_001.cor.fq,fixed_138599-134_S21_L003_R1_001.cor.fq,fixed_138599-134_S21_L004_R1_001.cor.fq --right fixed_138599-134_S21_L001_R2_001.cor.fq,fixed_138599-134_S21_L002_R2_001.cor.fq,fixed_138599-134_S21_L003_R2_001.cor.fq,fixed_138599-134_S21_L004_R2_001.cor.fq --output /lustre1/mdh72859/Denovo_Assembly/trinity_134_test
+
+#This ran successfully for ~2 hours of wall-time, until encountering a fatal error at the final Trinity assembly step.
+#Error message is detailed below:
+
+Error, cmd: bash -c " set -o pipefail;/usr/local/apps/eb/Bowtie2/2.3.3-foss-2016b/bin/bowtie2 --local -k 2 --no-unal --threads 8 -f --score-min G,20,4 -x /lustre1/mdh72859/Denovo_Assembly/trinity_134_test/chrysalis/inchworm.K25.L25.DS.fa.min100 /lustre1/mdh72859/Denovo_Assembly/trinity_134_test/both.fa  | samtools view -@ 8 -F4 -Sb - | samtools sort -m 6710886400 -@ 8 -no - - > /lustre1/mdh72859/Denovo_Assembly/trinity_134_test/chrysalis/iworm.bowtie.nameSorted.bam"  2>tmp.49836.stderr died with ret 256 at /usr/local/apps/eb/Trinity/2.6.6-foss-2016b/trinityrnaseq-Trinity-v2.6.6/PerlLib/Pipeliner.pm line 166.
+	Pipeliner::run(Pipeliner=HASH(0x12de5a0)) called at /usr/local/apps/eb/Trinity/2.6.6-foss-2016b/trinityrnaseq-Trinity-v2.6.6/Trinity line 1864
+	main::run_chrysalis("/lustre1/mdh72859/Denovo_Assembly/trinity_134_test/inchworm.K"..., "/lustre1/mdh72859/Denovo_Assembly/trinity_134_test/both.fa", 200, 500, undef, "/lustre1/mdh72859/Denovo_Assembly/trinity_134_test/both.fa", "/lustre1/mdh72859/Denovo_Assembly/trinity_134_test/both.fa") called at /usr/local/apps/eb/Trinity/2.6.6-foss-2016b/trinityrnaseq-Trinity-v2.6.6/Trinity line 1664
+	main::run_Trinity() called at /usr/local/apps/eb/Trinity/2.6.6-foss-2016b/trinityrnaseq-Trinity-v2.6.6/Trinity line 1317
+	eval {...} called at /usr/local/apps/eb/Trinity/2.6.6-foss-2016b/trinityrnaseq-Trinity-v2.6.6/Trinity line 1316
+
+Trinity run failed. Must investigate error above.
+
+#breaking down the first line of error message above, starting with "Error, cmd: bash -c"
+Error, cmd: bash -c " set -o pipefail;/usr/local/apps/eb/Bowtie2/2.3.3-foss-2016b/bin/bowtie2 
+--local -k 2 --no-unal --threads 8 -f --score-min G,20,4 -x /lustre1/mdh72859/Denovo_Assembly/trinity_134_test/chrysalis/inchworm.K25.L25.DS.fa.min100 /lustre1/mdh72859/Denovo_Assembly/trinity_134_test/both.fa  | samtools view -@ 8 -F4 -Sb - | samtools sort -m 6710886400 -@ 8 -no - - > /lustre1/mdh72859/Denovo_Assembly/trinity_134_test/chrysalis/iworm.bowtie.nameSorted.bam"  2>tmp.49836.stderr died with ret 256 at /usr/local/apps/eb/Trinity/2.6.6-foss-2016b/trinityrnaseq-Trinity-v2.6.6/PerlLib/Pipeliner.pm line 166.
+
+#This appears to be calling bowtie2
+-x /lustre1/mdh72859/Denovo_Assembly/trinity_134_test/chrysalis/inchworm.K25.L25.DS.fa.min100
+#This is the index parameter call. The directory chrysalis is full of .bt2 index files, and the inchworm.K25.L25.DS.fa.min100 file is present
+/lustre1/mdh72859/Denovo_Assembly/trinity_134_test/both.fa
+#This should be the input to bowtie. It is present and has sequences.
+  | samtools view -@ 8 -F4 -Sb - | samtools sort -m 6710886400 -@ 8 -no - - > /lustre1/mdh72859/Denovo_Assembly/trinity_134_test/chrysalis/iworm.bowtie.nameSorted.bam"
+#Next line is using samtools, generating an output .BAM called "iworm.bowtie.nameSorted.bam". This file is present and contains data.
+#These leaves the following chunk below, which looks like a good culprit:
+2>tmp.49836.stderr died with ret 256 at /usr/local/apps/eb/Trinity/2.6.6-foss-2016b/trinityrnaseq-Trinity-v2.6.6/PerlLib/Pipeliner.pm line 166.
+#What is Pipeliner.pm and why did it fail at line 166?
+
+
+#Need to dig into Pipeliner and contact GACRC. Going to make a small correction that I don't think will
+#fix it (adding --SS_lib_type RF) and will let test re-run overnight.
+
+08/17/18
+#Not sure what fixed it. I contacted GACRC, and they got back to me that the Trinity failure was most
+#likely a Bowtie bug. They updated versions and told me to rerun the same script....after I had already
+#restarted the script with the new --SS_lib_type RF parameter. But anyway, the script seemed to have
+#worked. It took 86 hours of walltime for ONE sample, but generated the expected assembly.
+
+#Correction. Trinity did NOT work (or did it? Idfk). Inspecting fasta headers reveals an issue
+>TRINITY_DN22188_c0_g1_i1 len=213 path=[0:0-212]
+#this is the typical fasta header for all the assembled transcripts. There are 80,068 of these.
+#The header gives important info on the "gene" and "transcript", Trinity cluster, and location.
+TRINITY_DN22188: Trinity cluster DN22188 c0. 
+g1: gene 1
+i1: isoform 1
+#There are 61,1123 g1 transcripts. There are 59,989 c0 clusters. Clusters SHOULD be made up by
+#highly similar transcripts, ergo a cluster is a loose definition of a gene. According to this output,
+#close to 3/4 of ALL transcripts assembled belong to the same "gene", c0. Trinity groups transcripts into clusters by shared sequence content.
+#I could be wrong, however. Continued reading shows that in reality, the entire string up to isoform identifies
+#genes, e.g DN22188_c0_g1 is a unique gene. So long as there isn't another DN22188_c0_g1, this is a unique
+#cluster of transcripts 
+#Need to determine assembly quality to know with some confidence if this worked or if it didn't.
+#Tools that keep getting brought up: Detonate, Busco, and a series of tools in Trinity.
+
+
+/usr/local/apps/eb/Trinity/2014-07-17-foss-2016b/trinityrnaseq_r20140717/util/TrinityStats.pl trinity_134_test2.Trinity.fasta > Trinity_assembly.metrics
+
+################################
+## Counts of transcripts, etc.
+################################
+Total trinity 'genes':	62659
+Total trinity transcripts:	80068
+Percent GC: 47.49
+
+########################################
+Stats based on ALL transcript contigs:
+########################################
+
+	Contig N10: 5141
+	Contig N20: 4063
+	Contig N30: 3286
+	Contig N40: 2697
+	Contig N50: 2139
+
+	Median contig length: 461
+	Average contig: 1017.64
+	Total assembled bases: 81480760 #81m assembled bases
+
+
+#####################################################
+## Stats based on ONLY LONGEST ISOFORM per 'GENE':
+#####################################################
+
+	Contig N10: 4935  #10% of all bases are in contigs at least 4935bp long
+	Contig N20: 3856 
+	Contig N30: 3111
+	Contig N40: 2474
+	Contig N50: 1882  #50% of all bases are in contigs at least 1882bp long
+
+	Median contig length: 392
+	Average contig: 872.83
+	Total assembled bases: 54690653
+
+#So maybe not all that bad!
+
+#Wrote a longer script to repeat the above Trinity summary above and do another after aligning
+#raw reads to the new assembly
+
+#PBS -S /bin/bash
+#PBS -N TrinityAssembly_QualityTest1.1
+#PBS -q batch
+#PBS -l nodes=1:ppn=1
+#PBS -l walltime=100:00:00
+#PBS -l mem=10gb
+
+cd /lustre1/mdh72859/Denovo_Assembly
+mkdir TrinityAssembly_Quality
+cd /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output
+cp fixed_138599-134* /lustre1/mdh72859/Denovo_Assembly/TrinityAssembly_Quality
+cd /lustre1/mdh72859/Denovo_Assembly
+cp trinity_134_test2.Trinity.fasta /lustre1/mdh72859/Denovo_Assembly/TrinityAssembly_Quality
+
+cd /lustre1/mdh72859/Denovo_Assembly/TrinityAssembly_Quality
+module load Trinity/2014-07-17-foss-2016b
+/usr/local/apps/eb/Trinity/2014-07-17-foss-2016b/trinityrnaseq_r20140717/util/TrinityStats.pl trinity_134_test2.Trinity.fasta > Trinity_assembly.metrics
+
+module load Bowtie2/2.3.4.1-foss-2016b
+cd /lustre1/mdh72859/Denovo_Assembly/TrinityAssembly_Quality
+bowtie2-build -f trinity_134_test2.Trinity.fasta Trinity_test_fasta
+bowtie2 -x Trinity_test_fasta -1 fixed_138599-134_S21_L001_R1_001.cor.fq,fixed_138599-134_S21_L002_R1_001.cor.fq,fixed_138599-134_S21_L003_R1_001.cor.fq,fixed_138599-134_S21_L004_R1_001.cor.fq -2 fixed_138599-134_S21_L001_R2_001.cor.fq,fixed_138599-134_S21_L002_R2_001.cor.fq,fixed_138599-134_S21_L003_R2_001.cor.fq,fixed_138599-134_S21_L004_R2_001.cor.fq -S Trinity_test_alignment
+
+module load SAMtools/1.6-foss-2016b
+cd /lustre1/mdh72859/Denovo_Assembly/TrinityAssembly_Quality
+samtools sort -@ 4 -o Trinity_test_alignment_sorted.bam Trinity_test_alignment
+
+/usr/local/apps/eb/Trinity/2014-07-17-foss-2016b/trinityrnaseq_r20140717/util/SAM_nameSorted_to_uniq_count_stats.pl Trinity_test_alignment_sorted.bam > /lustre1/mdh72859/Denovo_Assembly/TrinityAssembly_Quality/Trinity_alignment.statistics
+
+#Also need to try using Detonate. Not currently supported on Sapelo/2. Submitted ticket to GACRC.
+#Detonate will likely be handy in comparing one assembly to another, but also offers a means to 
+#show how well an assembly is supported by its reads. What I really want to know is how well Trinity did with
+#our assembly (and if the weird cluster/gene thing is a problem or not).
+#There is another Trinity tool that generates contig length data incorporating expression values,
+#but this first requires that transcript abundance estimation has been done.
+
+#QA script worked on test alignment, alignment statistics pasted below:
+Building a SMALL index
+13718144 reads; of these:
+  13718144 (100.00%) were paired; of these:
+    1207501 (8.80%) aligned concordantly 0 times
+    6789211 (49.49%) aligned concordantly exactly 1 time
+    5721432 (41.71%) aligned concordantly >1 times
+    ----
+    1207501 pairs aligned concordantly 0 times; of these:
+      59199 (4.90%) aligned discordantly 1 time
+    ----
+    1148302 pairs aligned 0 times concordantly or discordantly; of these:
+      2296604 mates make up the pairs; of these:
+        1817165 (79.12%) aligned 0 times
+        247552 (10.78%) aligned exactly 1 time
+        231887 (10.10%) aligned >1 times
+93.38% overall alignment rate
+
+#read_type	count	pct
+left_only	12635926	49.32
+right_only	12593249	49.16
+proper_pairs	389532	1.52
+improper_pairs	416	0.00
+
+Total aligned reads: 25619123
+
+#Doesn't seem great.
