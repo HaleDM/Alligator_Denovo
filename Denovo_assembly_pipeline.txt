@@ -517,6 +517,7 @@ salmon quant -i transcripts.index -l A -1 138599-90_S19_L001_R1_001.fastq 138599
 #This ran to completion, requiring ~2.5 hours to finish for all 8 samples.
 #All eight libraries appear to be predominantly (89-91%) "ISR", or inward facing, stranded reads
 #where the forward/1st read falls on the reverse strand.
+#deleting directories, now that I know ISR type.
 
 08/16/18
 ##Moving forward with Trinity assembly
@@ -692,3 +693,454 @@ improper_pairs	416	0.00
 Total aligned reads: 25619123
 
 #Doesn't seem great.
+
+#Discussed with group, this information likely is misinformative, as running Trinity is best done with
+#all reads from all samples first, then individually aligning samples' reads back to the common assembly
+#for quantification purposes. Moving forward with the scaled up version of Trinity that employs this.
+#This required concatenating lane's reads for samples to simplify the script. I've pasted below as one
+#single script, but this was actually done separately, cat first, then trinity. 
+
+#PBS -S /bin/bash
+#PBS -N Trinity_Assembly1.2
+#PBS -q highmem_q
+#PBS -l nodes=1:ppn=16
+#PBS -l walltime=800:00:00
+#PBS -l mem=100gb
+
+cd /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output
+
+cat fixed_138599-110_S27_L001_R1_001.cor.fq fixed_138599-110_S27_L002_R1_001.cor.fq fixed_138599-110_S27_L003_R1_001.cor.fq fixed_138599-110_S27_L004_R1_001.cor.fq > fixed_110_R1.cor.fq
+cat fixed_138599-110_S27_L001_R2_001.cor.fq fixed_138599-110_S27_L002_R2_001.cor.fq fixed_138599-110_S27_L003_R2_001.cor.fq fixed_138599-110_S27_L004_R2_001.cor.fq > fixed_110_R2.cor.fq
+cat fixed_138599-134_S21_L001_R1_001.cor.fq fixed_138599-134_S21_L002_R1_001.cor.fq fixed_138599-134_S21_L003_R1_001.cor.fq fixed_138599-134_S21_L004_R1_001.cor.fq > fixed_134_R1.cor.fq
+cat fixed_138599-134_S21_L001_R2_001.cor.fq fixed_138599-134_S21_L002_R2_001.cor.fq fixed_138599-134_S21_L003_R2_001.cor.fq fixed_138599-134_S21_L004_R2_001.cor.fq > fixed_134_R2.cor.fq
+cat fixed_138599-23_S22_L001_R1_001.cor.fq fixed_138599-23_S22_L002_R1_001.cor.fq fixed_138599-23_S22_L003_R1_001.cor.fq fixed_138599-23_S22_L004_R1_001.cor.fq > fixed_23_R1.cor.fq
+cat fixed_138599-23_S22_L001_R2_001.cor.fq fixed_138599-23_S22_L002_R2_001.cor.fq fixed_138599-23_S22_L003_R2_001.cor.fq fixed_138599-23_S22_L004_R2_001.cor.fq > fixed_23_R2.cor.fq
+cat fixed_138599-63_S23_L001_R1_001.cor.fq fixed_138599-63_S23_L002_R1_001.cor.fq fixed_138599-63_S23_L003_R1_001.cor.fq fixed_138599-63_S23_L004_R1_001.cor.fq > fixed_63_R1.cor.fq
+cat fixed_138599-63_S23_L001_R2_001.cor.fq fixed_138599-63_S23_L002_R2_001.cor.fq fixed_138599-63_S23_L003_R2_001.cor.fq fixed_138599-63_S23_L004_R2_001.cor.fq > fixed_63_R2.cor.fq
+cat fixed_138599-68_S18_L001_R1_001.cor.fq fixed_138599-68_S18_L002_R1_001.cor.fq fixed_138599-68_S18_L003_R1_001.cor.fq fixed_138599-68_S18_L004_R1_001.cor.fq > fixed_68_R1.cor.fq
+cat fixed_138599-68_S18_L001_R2_001.cor.fq fixed_138599-68_S18_L002_R2_001.cor.fq fixed_138599-68_S18_L003_R2_001.cor.fq fixed_138599-68_S18_L004_R2_001.cor.fq > fixed_68_R2.cor.fq
+cat fixed_138599-69_S24_L001_R1_001.cor.fq fixed_138599-69_S24_L002_R1_001.cor.fq fixed_138599-69_S24_L003_R1_001.cor.fq fixed_138599-69_S24_L004_R1_001.cor.fq > fixed_69_R1.cor.fq
+cat fixed_138599-69_S24_L001_R2_001.cor.fq fixed_138599-69_S24_L002_R2_001.cor.fq fixed_138599-69_S24_L003_R2_001.cor.fq fixed_138599-69_S24_L004_R2_001.cor.fq > fixed_69_R2.cor.fq
+cat fixed_138599-8_S15_L001_R1_001.cor.fq fixed_138599-8_S15_L002_R1_001.cor.fq fixed_138599-8_S15_L003_R1_001.cor.fq fixed_138599-8_S15_L004_R1_001.cor.fq > fixed_8_R1.cor.fq
+cat fixed_138599-8_S15_L001_R2_001.cor.fq fixed_138599-8_S15_L002_R2_001.cor.fq fixed_138599-8_S15_L003_R2_001.cor.fq fixed_138599-8_S15_L004_R2_001.cor.fq > fixed_8_R2.cor.fq
+cat fixed_138599-90_S19_L001_R1_001.cor.fq fixed_138599-90_S19_L002_R1_001.cor.fq fixed_138599-90_S19_L003_R1_001.cor.fq fixed_138599-90_S19_L004_R1_001.cor.fq > fixed_90_R1.cor.fq
+cat fixed_138599-90_S19_L001_R2_001.cor.fq fixed_138599-90_S19_L002_R2_001.cor.fq fixed_138599-90_S19_L003_R2_001.cor.fq fixed_138599-90_S19_L004_R2_001.cor.fq > fixed_90_R2.cor.fq
+
+cd /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output
+
+module load Trinity/2.6.6-foss-2016b
+Trinity --seqType fq --max_memory 100G --CPU 8 --no_version_check --full_cleanup --normalize_reads --SS_lib_type RF --left fixed_134_R1.cor.fq,fixed_68_R1.cor.fq,fixed_8_R1.cor.fq,fixed_90_R1.cor.fq,fixed_110_R1.cor.fq,fixed_23_R1.cor.fq,fixed_63_R1.cor.fq,fixed_69_R1.cor.fq --right fixed_134_R2.cor.fq,fixed_68_R2.cor.fq,fixed_8_R2.cor.fq,fixed_90_R2.cor.fq,fixed_110_R2.cor.fq,fixed_23_R2.cor.fq,fixed_63_R2.cor.fq,fixed_69_R2.cor.fq --output /lustre1/mdh72859/Denovo_Assembly/Trinity_Assembly
+
+##Now running quality assessment on full assembly
+
+#PBS -S /bin/bash
+#PBS -N TrinityAssembly_QualityAssessment1.0
+#PBS -q batch
+#PBS -l nodes=1:ppn=1
+#PBS -l walltime=100:00:00
+#PBS -l mem=10gb
+
+cd /lustre1/mdh72859/Denovo_Assembly/rCorrector_Output
+cp fixed_110* /lustre1/mdh72859/Denovo_Assembly/TrinityAssembly_Quality
+cp fixed_134* /lustre1/mdh72859/Denovo_Assembly/TrinityAssembly_Quality
+cp fixed_23* /lustre1/mdh72859/Denovo_Assembly/TrinityAssembly_Quality
+cp fixed_63* /lustre1/mdh72859/Denovo_Assembly/TrinityAssembly_Quality
+cp fixed_68* /lustre1/mdh72859/Denovo_Assembly/TrinityAssembly_Quality
+cp fixed_69* /lustre1/mdh72859/Denovo_Assembly/TrinityAssembly_Quality
+cp fixed_8* /lustre1/mdh72859/Denovo_Assembly/TrinityAssembly_Quality
+cp fixed_90* /lustre1/mdh72859/Denovo_Assembly/TrinityAssembly_Quality
+
+cd /lustre1/mdh72859/Denovo_Assembly
+cp Trinity_Assembly.Trinity.fasta /lustre1/mdh72859/Denovo_Assembly/TrinityAssembly_Quality
+
+cd /lustre1/mdh72859/Denovo_Assembly/TrinityAssembly_Quality
+module load Trinity/2.6.6-foss-2016b
+/usr/local/apps/eb/Trinity/2.6.6-foss-2016b/trinityrnaseq-Trinity-v2.6.6/util/TrinityStats.pl Trinity_Assembly.Trinity.fasta > Trinity_FullAssembly.metrics
+
+module load Bowtie2/2.3.4.1-foss-2016b
+cd /lustre1/mdh72859/Denovo_Assembly/TrinityAssembly_Quality
+bowtie2-build -f Trinity_Assembly.Trinity.fasta Trinity_FullFasta
+bowtie2 -x Trinity_FullFasta -1 fixed_134_R1.cor.fq,fixed_68_R1.cor.fq,fixed_8_R1.cor.fq,fixed_90_R1.cor.fq,fixed_110_R1.cor.fq,fixed_23_R1.cor.fq,fixed_63_R1.cor.fq,fixed_69_R1.cor.fq -2 fixed_134_R2.cor.fq,fixed_68_R2.cor.fq,fixed_8_R2.cor.fq,fixed_90_R2.cor.fq,fixed_110_R2.cor.fq,fixed_23_R2.cor.fq,fixed_63_R2.cor.fq,fixed_69_R2.cor.fq -S Trinity_FullAlignment
+
+module load SAMtools/1.6-foss-2016b
+cd /lustre1/mdh72859/Denovo_Assembly/TrinityAssembly_Quality
+samtools sort -@ 4 -o Trinity_test_alignment_sorted.bam Trinity_test_alignment
+
+/usr/local/apps/eb/Trinity/2.6.6-foss-2016b/trinityrnaseq-Trinity-v2.6.6/util/misc/SAM_nameSorted_to_uniq_count_stats.pl Trinity_FullAlignment_sorted.bam > /lustre1/mdh72859/Denovo_Assembly/TrinityAssembly_Quality/Trinity_FullAlignment.statistics
+
+##Need to run trinotate. Trinotate uses Blastx and Blastp hits as part of annotation. So, first need to
+##make a database (uniprot) for those blasts and chop trinity assembly down into manageable chunks
+
+#PBS -S /bin/bash
+#PBS -N Blast_db1.2
+#PBS -q batch
+#PBS -l nodes=1:ppn=1:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=20gb
+
+cd /lustre1/mdh72859/Denovo_Assembly
+mkdir Trinotate
+cp Trinity_Assembly.Trinity.fasta /lustre1/mdh72859/Denovo_Assembly/Trinotate
+cd Trinotate
+
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14 
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+wget "ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz"
+gunzip uniprot_sprot.fasta.gz
+makeblastdb -in uniprot_sprot.fasta -dbtype prot -out uniprot_sprot_database
+
+awk 'BEGIN {n_seq=0;} /^>/ {if(n_seq%20000==0){file=sprintf("myseq%d.fa",n_seq);} print >> file; n_seq++; next;} { print >> file; }' < Trinity_Assembly.Trinity.fasta
+
+##Eventually, I run blastx and p with that database. Before blastp can be run, however, I need to use Transdecoder
+##to get primary (AA) sequences from transcripts.
+
+##Psych -- we're going to run Blastx alone because I don't want to wait on transdecoder to finish
+##Each chunk was run as an individual script
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastx0_20k
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastx -query myseq0.fa -db uniprot_sprot_database -out Trinity_assembly_Blastx0 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastx20_40k
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastx -query myseq20000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastx1 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastx40_60k
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastx -query myseq40000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastx2 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastx60_80k
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastx -query myseq60000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastx3 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastx80_100k
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastx -query myseq80000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastx4 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastx100_120k
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastx -query myseq100000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastx5 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastx120_140k
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastx -query myseq120000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastx6 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastx140_160k
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastx -query myseq140000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastx7 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastx160_180k
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastx -query myseq160000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastx8 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastx180_200k
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastx -query myseq180000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastx9 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastx200_220k
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastx -query myseq200000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastx10 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastx220k
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastx -query myseq220000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastx11 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+##Also need to run Blastp. Needs to be broken down into manageable pieces, just like Blastx
+
+awk 'BEGIN {n_seq=0;} /^>/ {if(n_seq%20000==0){file=sprintf("myAAseq%d.fa",n_seq);} print >> file; n_seq++; next;} { print >> file; }' < longest_orfs.pep
+
+##These were run as individual scripts
+
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastp0_20k
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastp -query /lustre1/mdh72859/Denovo_Assembly/Trinotate/Trinity_Assembly.Trinity.fasta.transdecoder_dir/myAAseq0.fa -db uniprot_sprot_database -out Trinity_assembly_Blastp0 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastp20_40k
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastp -query /lustre1/mdh72859/Denovo_Assembly/Trinotate/Trinity_Assembly.Trinity.fasta.transdecoder_dir/myAAseq20000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastp1 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastp40_60K
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastp -query /lustre1/mdh72859/Denovo_Assembly/Trinotate/Trinity_Assembly.Trinity.fasta.transdecoder_dir/myAAseq40000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastp2 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastp60_80k
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastp -query /lustre1/mdh72859/Denovo_Assembly/Trinotate/Trinity_Assembly.Trinity.fasta.transdecoder_dir/myAAseq60000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastp3 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastp80_100k
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastp -query /lustre1/mdh72859/Denovo_Assembly/Trinotate/Trinity_Assembly.Trinity.fasta.transdecoder_dir/myAAseq80000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastp4 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastp100_120K
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastp -query /lustre1/mdh72859/Denovo_Assembly/Trinotate/Trinity_Assembly.Trinity.fasta.transdecoder_dir/myAAseq100000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastp5 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastp120_140k
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastp -query /lustre1/mdh72859/Denovo_Assembly/Trinotate/Trinity_Assembly.Trinity.fasta.transdecoder_dir/myAAseq120000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastp6 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastp140_160k
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastp -query /lustre1/mdh72859/Denovo_Assembly/Trinotate/Trinity_Assembly.Trinity.fasta.transdecoder_dir/myAAseq140000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastp7 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastp160_180k
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastp -query /lustre1/mdh72859/Denovo_Assembly/Trinotate/Trinity_Assembly.Trinity.fasta.transdecoder_dir/myAAseq160000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastp8 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+#PBS -S /bin/bash
+#PBS -M matthew.hale@uga.edu 
+#PBS -m ae
+#PBS -N Blastp180k
+#PBS -q batch
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=50gb
+module load BLAST+/2.6.0-foss-2016b-Python-2.7.14
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+blastp -query /lustre1/mdh72859/Denovo_Assembly/Trinotate/Trinity_Assembly.Trinity.fasta.transdecoder_dir/myAAseq180000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastp9 -outfmt 6 -evalue 0.0001 -num_threads 4
+
+
+##And HMMER. This is a basically a better Blastp. It uses a PFAM (EMBL) .hmm database that was downloaded from https://pfam.xfam.org
+#PBS -S /bin/bash
+#PBS -N HMMER1.1.sh
+#PBS -q batch
+#PBS -l nodes=1:ppn=2:AMD
+#PBS -l mem=40gb
+#PBS -l walltime=480:00:00
+
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+module load HMMER/3.1b2-foss-2016b
+hmmpress Pfam-A.hmm
+hmmscan --cpu 2 --tblout TrinotatePFAM.out --domtblout TrinotateDomainsPFAM.out Pfam-A.hmm /lustre1/mdh72859/Denovo_Assembly/Trinotate/Trinity_Assembly.Trinity.fasta.transdecoder_dir/longest_orfs.pep
+##This will get domain matches within sequences as well as full sequence matches
+
+##Aaaaand TMHMM. This is a prediction program specifically for transmembrane proteins. Not sure how its different from HMMER
+
+#PBS -S /bin/bash
+#PBS -N TMHMM1.0
+#PBS -q batch
+#PBS -l nodes=1:ppn=1:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=10gb
+
+##Aaaaaand SignalP, which is dedicated to finding signaling proteins
+
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+
+module load TMHMM/2.0c-foss-2016b-Perl-5.24.1
+tmhmm /lustre1/mdh72859/Denovo_Assembly/Trinotate/Trinity_Assembly.Trinity.fasta.transdecoder_dir/longest_orfs.pep
+
+#PBS -S /bin/bash
+#PBS -N SignalP1.0
+#PBS -q batch
+#PBS -l nodes=1:ppn=1
+#PBS -l walltime=120:00:00
+#PBS -l mem=20gb
+
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+module load SignalP/4.1f-foss-2016b
+time signalp /lustre1/mdh72859/Denovo_Assembly/Trinotate/Trinity_Assembly.Trinity.fasta.transdecoder_dir/longest_orfs.pep
+
+##First output from Assembly QA script
+################################
+## Counts of transcripts, etc.
+################################
+Total trinity 'genes':	160283
+Total trinity transcripts:	232096
+Percent GC: 47.46
+
+########################################
+Stats based on ALL transcript contigs:
+########################################
+
+	Contig N10: 6301
+	Contig N20: 4930
+	Contig N30: 3980
+	Contig N40: 3234
+	Contig N50: 2576
+
+	Median contig length: 398
+	Average contig: 1053.15
+	Total assembled bases: 244431496
+
+
+#####################################################
+## Stats based on ONLY LONGEST ISOFORM per 'GENE':
+#####################################################
+
+	Contig N10: 5838
+	Contig N20: 4403
+	Contig N30: 3338
+	Contig N40: 2442
+	Contig N50: 1599
+
+	Median contig length: 318
+	Average contig: 722.61
+	Total assembled bases: 115822120

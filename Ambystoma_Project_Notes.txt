@@ -32,3 +32,20 @@ in mind.
 Stranded reads in IGV will exhibit a distinct pattern wherein read density falls on one strand
 or the other. This can be visualized using a .BAM file generated after alignment (from MDH's prior
 Hisat2 alignment).
+
+8/21/18
+-Going to use Detonate to compare assembly quality across our different approaches
+-MDH brought up possible assembly quality issues, wherein when mapping individual reads
+back to a sample assembly (for just one sample), very few read pairs mapped together, but 
+this highlighted a fundamental misunderstanding in the correct way to use Trinity to generate
+assemblies in DEG analysis. That is, ALL reads across ALL samples, are used to generate a single assembly, 
+then individual samples are mapped back to this assembly. This could possibly address the 
+poor pair mapping MDH reported.
+-Move forward with using Trinity to generate assemblies for all samples. EMB is moving forward
+with reference-guided assembly process.
+-Found a small hiccup, wherein the Amiss. genome index being used by EMB and SLB wasn't using
+splice site annotations. Unsure what impact this will (or won't) have downstream application.
+
+9/6/18
+-Goal for the week is annotating Trinity assembly both with Trinotate and Blastx for Ben and Matthew,
+getting assembly running for Samantha.
