@@ -29,6 +29,6 @@ bowtie2 -x Trinity_FullFasta -1 fixed_134_R1.cor.fq,fixed_68_R1.cor.fq,fixed_8_R
 
 module load SAMtools/1.6-foss-2016b
 cd /lustre1/mdh72859/Denovo_Assembly/TrinityAssembly_Quality
-samtools sort -@ 4 -o Trinity_test_alignment_sorted.bam Trinity_test_alignment
+samtools sort -@ 4 -o Trinity_FullAlignment.bam Trinity_FullAlignment
 
 /usr/local/apps/eb/Trinity/2.6.6-foss-2016b/trinityrnaseq-Trinity-v2.6.6/util/misc/SAM_nameSorted_to_uniq_count_stats.pl Trinity_FullAlignment_sorted.bam > /lustre1/mdh72859/Denovo_Assembly/TrinityAssembly_Quality/Trinity_FullAlignment.statistics

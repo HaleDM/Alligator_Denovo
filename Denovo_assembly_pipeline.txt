@@ -1067,7 +1067,8 @@ cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
 blastp -query /lustre1/mdh72859/Denovo_Assembly/Trinotate/Trinity_Assembly.Trinity.fasta.transdecoder_dir/myAAseq180000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastp9 -outfmt 6 -evalue 0.0001 -num_threads 4
 
 
-##And HMMER. This is a basically a better Blastp. It uses a PFAM (EMBL) .hmm database that was downloaded from https://pfam.xfam.org
+##And HMMER. Will need to chunk, just like Blasts
+##This is a basically a better Blastp. It uses a PFAM (EMBL) .hmm database that was downloaded from https://pfam.xfam.org
 #PBS -S /bin/bash
 #PBS -N HMMER1.1.sh
 #PBS -q batch
@@ -1144,3 +1145,81 @@ Stats based on ALL transcript contigs:
 	Median contig length: 318
 	Average contig: 722.61
 	Total assembled bases: 115822120
+
+##All components of Trinotate have finished running. Now, I need to concatenate the Blastx,
+##Blastp, and HMMER components into single files, get everything into a single directory,
+##And try running Trinotate.
+
+Trinity_assembly_Blastp0
+
+##Catting everything back together
+cat TrinotatePFAM0.out TrinotatePFAM1.out TrinotatePFAM2.out TrinotatePFAM3.out TrinotatePFAM4.out TrinotatePFAM5.out TrinotatePFAM6.out TrinotatePFAM7.out TrinotatePFAM8.out TrinotatePFAM9.out > Merged_PFAM.out
+cat TrinotateDomainsPFAM0.out TrinotateDomainsPFAM1.out TrinotateDomainsPFAM2.out TrinotateDomainsPFAM3.out TrinotateDomainsPFAM4.out TrinotateDomainsPFAM5.out TrinotateDomainsPFAM6.out TrinotateDomainsPFAM7.out TrinotateDomainsPFAM8.out TrinotateDomainsPFAM9.out > Merged_PFAMDomains.out
+cat TrinotateDomainsPFAM0.out TrinotateDomainsPFAM1.out TrinotateDomainsPFAM2.out TrinotateDomainsPFAM3.out TrinotateDomainsPFAM4.out TrinotateDomainsPFAM5.out TrinotateDomainsPFAM6.out TrinotateDomainsPFAM7.out TrinotateDomainsPFAM8.out TrinotateDomainsPFAM9.out > Merged_PFAMDomains.out
+cat Trinity_assembly_Blastp0 Trinity_assembly_Blastp1 Trinity_assembly_Blastp2 Trinity_assembly_Blastp3 Trinity_assembly_Blastp4 Trinity_assembly_Blastp5 Trinity_assembly_Blastp6 Trinity_assembly_Blastp7 Trinity_assembly_Blastp8 Trinity_assembly_Blastp9 > Merged_Blastp.out
+cat Trinity_assembly_Blastx0 Trinity_assembly_Blastx1 Trinity_assembly_Blastx2 Trinity_assembly_Blastx3 Trinity_assembly_Blastx4 Trinity_assembly_Blastx5 Trinity_assembly_Blastx6 Trinity_assembly_Blastx7 Trinity_assembly_Blastx8 Trinity_assembly_Blastx9 Trinity_assembly_Blastx10 Trinity_assembly_Blastx11 > Merged_Blastx.out
+
+##And running Trinotate
+
+#PBS -S /bin/bash
+#PBS -q batch
+#PBS -N Trinotate1.3
+#PBS -l nodes=1:ppn=1
+#PBS -l walltime=4:00:00
+#PBS -l mem=2gb
+
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+
+module load Trinotate/3.1.1-foss-2016b
+mkdir -p /lscratch/${USER}_${PBS_JOBID}
+echo "Node: $(cat $PBS_NODEFILE | sort -u | tr '\n' ' ')"
+cp Trinotate.sqlite /lscratch/${USER}_${PBS_JOBID}/
+
+Trinotate /lscratch/${USER}_${PBS_JOBID}/Trinotate.sqlite init --gene_trans_map Trinity_Assembly.Trinity.fasta.gene_trans_map --transcript_fasta Trinity_Assembly.Trinity.fasta --transdecoder_pep longest_orfs.pep LOAD_swissprot_blastx Merged_Blastx.out LOAD_swissprot_blastp Merged_Blastp.out LOAD_pfam Merged_PFAM.out LOAD_signalp SignalP1.0.o367996 LOAD_tmhmm TMHMM1.0.o367987
+Trinotate /lscratch/${USER}_${PBS_JOBID}/Trinotate.sqlite report > Trinotate.xls
+cp /lscratch/${USER}_${PBS_JOBID}/Trinotate.sqlite Trinotate.sqlite
+rm -rf /lscratch/${USER}_${PBS_JOBID}
+
+##This didn't work properly. It generated the expected file, but it was almost entirely empty. This would suggest
+##there weren't matches in the input ... but that blast/HMMER found a lot of matches. So, there's a problem elsewhere
+
+##Not sure why Trinotate didn't work, but not a priority to fix. Moving on to using Detonate.
+##Using the cat'd files from Trinity that consolidated reads across lanes into a single F and R for each sample
+
+#PBS -S /bin/bash
+#PBS -q batch
+#PBS -N Detonate_test1.1
+#PBS -l nodes=1:ppn=4
+#PBS -l walltime=24:00:00
+#PBS -l mem=10gb
+
+cd /lustre1/mdh72859/Denovo_Assembly/Detonate
+
+module load detonate/1.11
+
+rsem-eval-calculate-score --paired-end fixed_110_R1.cor.fq,fixed_134_R1.cor.fq,fixed_23_R1.cor.fq,fixed_63_R1.cor.fq,fixed_68_R1.cor.fq,fixed_69_R1.cor.fq,fixed_8_R1.cor.fq,fixed_90_R1.cor.fq fixed_110_R2.cor.fq,fixed_134_R2.cor.fq,fixed_23_R2.cor.fq,fixed_63_R2.cor.fq,fixed_68_R2.cor.fq,fixed_69_R2.cor.fq,fixed_8_R2.cor.fq,fixed_90_R2.cor.fq Trinity_Assembly.Trinity.fasta Total_DeNovo 150 
+rsem-eval-calculate-score --paired-end fixed_110_R1.cor.fq,fixed_134_R1.cor.fq,fixed_23_R1.cor.fq,fixed_63_R1.cor.fq,fixed_68_R1.cor.fq,fixed_69_R1.cor.fq,fixed_8_R1.cor.fq,fixed_90_R1.cor.fq fixed_110_R2.cor.fq,fixed_134_R2.cor.fq,fixed_23_R2.cor.fq,fixed_63_R2.cor.fq,fixed_68_R2.cor.fq,fixed_69_R2.cor.fq,fixed_8_R2.cor.fq,fixed_90_R2.cor.fq Trinity-GG.fasta.fasta Genome_Guided 150
+
+##This is going to calculate assembly scores for mine and SBock's Trinity assemblies.
+##It's called Detonate test.. but this will probably be the real version
+
+##While running, wrote a small script to clean up the reads being used, particularly all the Trim/rCorr output
+##All of the final cleaned reads are present in the neater cat'd versions. Everything else is being copied
+##to a new folder, originals deleted, and the file compressed.
+
+#PBS -S /bin/bash
+#PBS -q batch
+#PBS -N Read_consolidateZip
+#PBS -l nodes=1:ppn=4
+#PBS -l walltime=24:00:00
+#PBS -l mem=2gb
+
+cd /lustre1/mdh72859/Denovo_Assembly/rCorrecter_Output/rCorrector_Output
+mkdir TrimGalore_rCorrector_Reads
+cp 138* /lustre1/lustre1/mdh72859/Denovo_Assembly/rCorrecter_Output/rCorrector_Output/TrimGalore_rCorrector_Reads
+cp fixed_138* /lustre1/lustre1/mdh72859/Denovo_Assembly/rCorrecter_Output/rCorrector_Output/TrimGalore_rCorrector_Reads
+cp rmun* /lustre1/lustre1/mdh72859/Denovo_Assembly/rCorrecter_Output/rCorrector_Output/TrimGalore_rCorrector_Reads
+tar -zcvf TrimGalore_rCorrector_Reads.tar.gz TrimGalore_rCorrector_Reads
+rm 138*
+rm fixed_138*
+rm rmun*
