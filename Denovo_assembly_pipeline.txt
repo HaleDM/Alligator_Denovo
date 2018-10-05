@@ -1211,7 +1211,7 @@ rsem-eval-calculate-score --paired-end fixed_110_R1.cor.fq,fixed_134_R1.cor.fq,f
 #PBS -q batch
 #PBS -N Read_consolidateZip
 #PBS -l nodes=1:ppn=4
-#PBS -l walltime=24:00:00
+#PBS -l walltime=480:00:00
 #PBS -l mem=2gb
 
 cd /lustre1/mdh72859/Denovo_Assembly/rCorrecter_Output/rCorrector_Output
@@ -1223,3 +1223,37 @@ tar -zcvf TrimGalore_rCorrector_Reads.tar.gz TrimGalore_rCorrector_Reads
 rm 138*
 rm fixed_138*
 rm rmun*
+
+##Detonate took a while to run. Had to cancel and adjust maximum wall time (24->480 hours), then restart
+##But it worked. Summary of scores pasted below. Apparently, total de novo is better, but this is 
+##potentially confounded by the --normalize_reads option. I used this parameter, SBock did not.
+
+##total Denovo
+Score	-5803002014.79
+BIC_penalty	-2162719.44
+Prior_score_on_contig_lengths_(f_function_canceled)	-862294.73
+Prior_score_on_contig_sequences	-338854004.58
+Data_likelihood_in_log_space_without_correction	-5461954504.59
+Correction_term_(f_function_canceled)	-831508.56
+Number_of_contigs	232096
+Expected_number_of_aligned_reads_given_the_data	112784471.32
+Number_of_contigs_smaller_than_expected_read/fragment_length	0
+Number_of_contigs_with_no_read_aligned_to	7975
+Maximum_data_likelihood_in_log_space	-5460640374.44
+Number_of_alignable_reads	113664385
+Number_of_alignments_in_total	349107136
+
+##Genome guided
+Score	-6280927813.59
+BIC_penalty	-1965081.04
+Prior_score_on_contig_lengths_(f_function_canceled)	-769786.33
+Prior_score_on_contig_sequences	-256804516.20
+Data_likelihood_in_log_space_without_correction	-6022124189.33
+Correction_term_(f_function_canceled)	-735759.31
+Number_of_contigs	210886
+Expected_number_of_aligned_reads_given_the_data	109726382.47
+Number_of_contigs_smaller_than_expected_read/fragment_length	0
+Number_of_contigs_with_no_read_aligned_to	4963
+Maximum_data_likelihood_in_log_space	-6018963028.11
+Number_of_alignable_reads	110596219
+Number_of_alignments_in_total	223217383
