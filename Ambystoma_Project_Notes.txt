@@ -49,3 +49,69 @@ splice site annotations. Unsure what impact this will (or won't) have downstream
 9/6/18
 -Goal for the week is annotating Trinity assembly both with Trinotate and Blastx for Ben and Matthew,
 getting assembly running for Samantha.
+
+10/26/18
+WThompson: researching best way to do trimming and correcting on reads
+-Running TrimGalore with default overlap set to 3
+-Our pre-Trinity pipeline is:
+1.) Reads from GGBC
+2.) fastQC to get QA for raw, unchanged reads
+3.) Send reads to rCorrector and Harvard python script
+4.) Send corrected reads to TrimGalore
+5.) Send corrected, trimmed reads to Trinity.
+-Get the foundation SOLID for the quality of reads on Will's end, and next week launch Trinity
+
+EBertucci:
+-Working on Medaka, all the way count matrix with gene names. Now working on getting edgeR running
+-Figuring out trimming and library size normalizations down. Wants to get contrasts running
+ and DEGs 
+-BBP wants to be able to include effects like mesocosm in the model
+-EBertucci and MDH will work through the contrasts today
+
+11/2/18
+WThompson
+-TrimGalore isn't spitting out the FastQC like he's specifying, unsure why
+-Can go back and run FastQC independently if FastQC-in-TrimGalore isn't working
+-Goal is to get around the FastQC block
+
+MHale
+-PoSSum-Search to identify enrichment of motifs in the genome
+-Don't go down the Cufflinks rabbit-hole
+-Venny, online program to identify shared gene features from 2+ lists
+
+SBock
+-Not doing much Seq/Omics right now, but found a cool paper in Daphnia using RRBS
+ to study transgenerational effects (of what)
+ 
+EBertucci
+-Figuring out how to specify meaningful contrasts and main effects in DEG analysis
+-Found a way to append MSTRG identifiers with gene names and ref_gene names in StringTie!
+
+11/9/18
+EBertucci
+-RNAseq analysis on LoDif (medaka)
+-Main effects are working, but plotMDS in edgeR shows one of the mesocosms as being a big
+ outlier. Two approaches to fixing are 1.) blocking and 2.) batch effect controlling. The
+ blocking effect seems to work. MDH should look into using blocking for clutch. In other
+ news, RRBS reads came back from GGBC, but ~40% of reads were lost/didn't work.
+ 
+SBock
+-Ecoinformatics: trying to access large climate data sets from a remote server from
+ 32 different climate models (run from 2006 to 2099)
+ 
+MDH 
+-Take the 10 overlapping AP and WO basal enriched genes (the ones that are shared that
+ CAN'T BE SHARED) and track down the MSTRGs for those, then blast/blat them to see
+ if they're the same gene
+-Can still do the 2nd-pass assembly with the perl script, but is secondary and won't fix
+ all the problems we have
+-See notes from 11/14 lab meeting!
+ 
+WThompson
+-QC with FastQC after trimming is up and running. Working through some quality flags in
+ FastQC, but flags are familiar -- per base sequence content in the first 12bp and sequence
+ duplication levels
+
+11/15/18
+Notes are now redundant with BBP
+

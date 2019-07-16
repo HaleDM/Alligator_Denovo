@@ -794,8 +794,21 @@ awk 'BEGIN {n_seq=0;} /^>/ {if(n_seq%20000==0){file=sprintf("myseq%d.fa",n_seq);
 ##Eventually, I run blastx and p with that database. Before blastp can be run, however, I need to use Transdecoder
 ##to get primary (AA) sequences from transcripts.
 
+#PBS -S /bin/bash
+#PBS -N Transdecoder1.0
+#PBS -q batch
+#PBS -l nodes=1:ppn=1:AMD
+#PBS -l walltime=480:00:00
+#PBS -l mem=10gb
+
+cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
+
+module load TransDecoder/2.1.0-foss-2016b-Perl-5.24.1
+TransDecoder.LongOrfs -t Trinity_Assembly.Trinity.fasta
+
 ##Psych -- we're going to run Blastx alone because I don't want to wait on transdecoder to finish
 ##Each chunk was run as an individual script
+
 #PBS -S /bin/bash
 #PBS -M matthew.hale@uga.edu 
 #PBS -m ae
@@ -1067,7 +1080,7 @@ cd /lustre1/mdh72859/Denovo_Assembly/Trinotate
 blastp -query /lustre1/mdh72859/Denovo_Assembly/Trinotate/Trinity_Assembly.Trinity.fasta.transdecoder_dir/myAAseq180000.fa -db uniprot_sprot_database -out Trinity_assembly_Blastp9 -outfmt 6 -evalue 0.0001 -num_threads 4
 
 
-##And HMMER. Will need to chunk, just like Blasts
+##And HMMER. Will need to chunk, just like Blasts (just pasting a single example below)
 ##This is a basically a better Blastp. It uses a PFAM (EMBL) .hmm database that was downloaded from https://pfam.xfam.org
 #PBS -S /bin/bash
 #PBS -N HMMER1.1.sh
